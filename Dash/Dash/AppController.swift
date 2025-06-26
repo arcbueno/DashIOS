@@ -7,8 +7,9 @@
 
 import FirebaseAuth
 
-class AppController{
-    var user: User? = nil
+@MainActor
+class AppController : ObservableObject{
+    @Published var user: User? = nil
     var isAuthenticated: Bool {
         return user != nil
     }

@@ -12,12 +12,12 @@ import FirebaseAuth
 
 
 class AppDelegate: NSObject, UIApplicationDelegate {
-  func application(_ application: UIApplication,
-                   didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-    FirebaseApp.configure()
-
-    return true
-  }
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        FirebaseApp.configure()
+        
+        return true
+    }
 }
 
 
@@ -25,18 +25,22 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct DashApp: App {
     // Register app delegate for Firebase setup
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    @State var appController : AppController = Injection.shared.container.resolve(AppController.self)!
-        
+    @StateObject var appController : AppController = AppController()
+    
+//    init(){
+//        Injection.shared.container.register(AppController.self, factory: { _ in self.appController })
+//    }
+    
     var body: some Scene {
         WindowGroup {
-            NavigationView {
+            Group {
                 if(appController.isAuthenticated) {
-                    HomePage()
+                    HomePage(appController: appController)
                 } else {
-                    LoginPage()
+                    LoginPage(appController: appController)
                 }
             }
-        }
+        }.environmentObject(appController)
     }
 }
 
@@ -50,11 +54,10 @@ final class Injection {
             _container = newValue
         }
     }
-
+    
     private var _container: Container?
     private func buildContainer() -> Container {
         let container = Container()
-        container.register(AppController.self, factory: { _ in AppController() })
         container.register(Auth.self ,factory: { _ in Auth.auth() })
         container.register(LoginRepository.self, factory: { resolver in
             LoginRepository(firebaseAuth: resolver.resolve(Auth.self)!)

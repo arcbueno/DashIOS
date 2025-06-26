@@ -10,18 +10,27 @@ import SwiftUI
 struct HomePage: View {
  /*   @StateObject private var viewModel = LoginViewModel(loginRepository: Injection.shared.container.resolve(LoginRepository.self)!)*/
     
+    var appController: AppController
+    @State private var path: [String] = []
+    
+    init(appController: AppController){
+        self.appController = appController
+    }
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack(path: $path) {
+            VStack {
+                Image(systemName: "globe")
+                    .imageScale(.large)
+                    .foregroundStyle(.tint)
+                Text("Hello, world!")
+            }
+            .padding()
         }
-        .padding()
         
     }
 }
 
 #Preview {
-    LoginPage()
+    HomePage(appController: AppController())
 }

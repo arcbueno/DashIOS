@@ -6,9 +6,14 @@
 //
 
 import Foundation
+import FirebaseAuth
 
 class LoginViewModel: ObservableObject {
     @Published var state: LoginViewModelState = LoginViewModelStateFilling()
+    @Published var isSuccess = false
+    
+    var email: String = ""
+    var password: String = ""
     
     private let loginRepository: LoginRepository
     
@@ -16,33 +21,42 @@ class LoginViewModel: ObservableObject {
         self.loginRepository = loginRepository
     }
     
-    func signIn(email: String, password: String) async -> Bool {
-        self.state = LoginViewModelStateLoading()
+    func signIn() async -> User? {
+        await MainActor.run {
+            self.state = LoginViewModelStateLoading()
+        }
         do {
             let result = try await loginRepository.signIn(email: email, password: password)
             print("User signed in successfully: \(result.user.email ?? "No email")")
-            return true;
+            
+            await MainActor.run {
+                self.isSuccess = true
+                self.state = LoginViewModelStateFilling()
+            }
+            return result.user;
         }catch {
             print("Error signing in: \(error.localizedDescription)")
+            
             self.state = LoginViewModelStateError(errorMessage: error.localizedDescription)
-            return false;
+            return nil;
         }
     }
-
+    
 }
 
 protocol LoginViewModelState{}
 
-class LoginViewModelStateFilling: LoginViewModelState {
+struct LoginViewModelStateFilling: LoginViewModelState {
 }
 
-class LoginViewModelStateLoading: LoginViewModelState {
+struct LoginViewModelStateLoading: LoginViewModelState {
 }
 
-class LoginViewModelStateError: LoginViewModelState {
+struct LoginViewModelStateError: LoginViewModelState {
     let errorMessage: String
     
     init(errorMessage: String = "An error occurred"){
         self.errorMessage = errorMessage
     }
 }
+
