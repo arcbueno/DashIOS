@@ -9,6 +9,7 @@ import SwiftUI
 import FirebaseCore
 import Swinject
 import FirebaseAuth
+import FirebaseFirestore
 
 
 class AppDelegate: NSObject, UIApplicationDelegate {
@@ -26,10 +27,6 @@ struct DashApp: App {
     // Register app delegate for Firebase setup
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject var appController : AppController = AppController()
-    
-//    init(){
-//        Injection.shared.container.register(AppController.self, factory: { _ in self.appController })
-//    }
     
     var body: some Scene {
         WindowGroup {
@@ -58,9 +55,17 @@ final class Injection {
     private var _container: Container?
     private func buildContainer() -> Container {
         let container = Container()
+        let firestoreDb = Firestore.firestore()
+        container.register(Firestore.self ,factory: { _ in firestoreDb })
         container.register(Auth.self ,factory: { _ in Auth.auth() })
         container.register(LoginRepository.self, factory: { resolver in
             LoginRepository(firebaseAuth: resolver.resolve(Auth.self)!)
+        })
+        container.register(WeeklyDataRepository.self, factory: { resolver in
+            WeeklyDataRepository(firebaseAuth: resolver.resolve(Auth.self)!, firestore: resolver.resolve(Firestore.self)!)
+        })
+        container.register(InboxRepository.self, factory: { resolver in
+            InboxRepository(firebaseAuth: resolver.resolve(Auth.self)!, firestore: resolver.resolve(Firestore.self)!)
         })
         return container
     }

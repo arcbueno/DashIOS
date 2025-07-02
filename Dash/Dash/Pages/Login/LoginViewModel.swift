@@ -25,8 +25,12 @@ class LoginViewModel: ObservableObject {
         await MainActor.run {
             self.state = LoginViewModelStateLoading()
         }
+        
+        // TODO AddValidation for email and password
         do {
-            let result = try await loginRepository.signIn(email: email, password: password)
+//            let result = try await loginRepository.signIn(email: email, password: password)
+            // Test
+            let result = try await loginRepository.signIn(email: "parcb.augusto@gmail.com", password: "123456")
             print("User signed in successfully: \(result.user.email ?? "No email")")
             
             await MainActor.run {

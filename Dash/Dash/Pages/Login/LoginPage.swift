@@ -61,9 +61,6 @@ struct LoginPage: View {
                             .background(Color(.darkGray))
                             .cornerRadius(99)
                     }.padding()
-                    //                        .navigationDestination(isPresented: $viewModel.isSuccess) {
-                    //                            HomePage(appController: appController)
-                    //                        }
                     if let errorState = viewModel.state as? LoginViewModelStateError {
                         Text(errorState.errorMessage)
                             .foregroundColor(.red)
