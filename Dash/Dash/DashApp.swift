@@ -67,6 +67,9 @@ final class Injection {
         container.register(InboxRepository.self, factory: { resolver in
             InboxRepository(firebaseAuth: resolver.resolve(Auth.self)!, firestore: resolver.resolve(Firestore.self)!)
         })
+        container.register(HabitRepository.self, factory: { resolver in
+            HabitRepository(firebaseAuth: resolver.resolve(Auth.self)!, firestore: resolver.resolve(Firestore.self)!)
+        })
         return container
     }
 }

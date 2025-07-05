@@ -38,15 +38,16 @@ struct WeeklyPrioritiesPage: View {
                                     
                                     Text(item.title)
                                         .font(.system(size: 24))
-                                    Spacer()
-                                    Image(systemName:  "trash")
-                                        .font(.system(size: 20))
-                                        .foregroundColor(Color(.darkGray))
-                                        .onTapGesture{
-                                            Task {
-                                                await viewModel.deleteItem(id: item.id)
+                                        .contextMenu {
+                                            Button{
+                                                Task {
+                                                    await viewModel.deleteItem(id: item.id)
+                                                }
+                                            } label: {
+                                                Label("Delete item", systemImage: "trash")
                                             }
                                         }
+                                    
                                 }
                                 .onTapGesture {
                                     Task{
@@ -63,7 +64,6 @@ struct WeeklyPrioritiesPage: View {
                         HStack{
                             TextField("Add task", text: $viewModel.weeklyTitle, prompt: Text("Add task").foregroundColor(.gray))
                                 .font(.system(size: 24))
-                                .disableAutocorrection(true)
                             
                             Button(action: {
                                 Task {
@@ -95,7 +95,7 @@ struct WeeklyPrioritiesPage: View {
                 }
             }
         }
-        .navigationBarItems(leading: btnBack)
+        
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
 
@@ -138,5 +138,5 @@ struct WeeklyPrioritiesPage: View {
 }
 
 #Preview {
-    HomePage(appController: AppController())
+    WeeklyPrioritiesPage(appController: AppController())
 }

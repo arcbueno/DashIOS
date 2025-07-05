@@ -17,7 +17,6 @@ struct HomePage: View {
     }
     
     var body: some View {
-        
         NavigationView() {
             ZStack {
                 VStack {
@@ -80,6 +79,15 @@ struct HomePage: View {
                                     
                                     Text(item.title)
                                         .font(.system(size: 24))
+                                        .contextMenu {
+                                            Button{
+                                                Task {
+                                                    await viewModel.deleteItem(id: item.id)
+                                                }
+                                            } label: {
+                                                Label("Delete item", systemImage: "trash")
+                                            }
+                                        }
                                 }
                                 .onTapGesture {
                                     Task{
@@ -110,6 +118,15 @@ struct HomePage: View {
                                         .font(.system(size: 24))
                                         .foregroundStyle(Color(.darkGray))
                                         .strikethrough(true, color: Color(.darkGray))
+                                        .contextMenu {
+                                            Button{
+                                                Task {
+                                                    await viewModel.deleteItem(id: item.id)
+                                                }
+                                            } label: {
+                                                Label("Delete item", systemImage: "trash")
+                                            }
+                                        }
                                 }
                                 .onTapGesture {
                                     Task{
@@ -123,9 +140,8 @@ struct HomePage: View {
                         .listStyle(PlainListStyle())
                         .scrollContentBackground(.hidden)
                         .background(.clear)
-                        
                         HStack{
-                            NavigationLink(destination:WeeklyPrioritiesPage(appController: self.appController) ){
+                            NavigationLink(destination:HabitTrackerPage(appController: self.appController) ){
                                 Text("Habit tracker")
                                     .font(.system(size: 24))
                                     .foregroundColor(.white)
@@ -147,44 +163,42 @@ struct HomePage: View {
                             }
                             
                         }
-                        
-                        
-                    }.frame(maxWidth: .infinity, alignment: .leading)
-                        .toolbar {
-                            ToolbarItem(placement: .principal) {
-                                Text("Dash")
-                                    .font(.largeTitle)
-                                    .fontWeight(.semibold)
-                                    .padding()
-                                
-                            }
-                            ToolbarItem(placement: .navigationBarTrailing) {
-                                Button(action: {
-                                    Task {
-                                        await viewModel.getAllItems()
-                                    }
-                                }) {
-                                    Image(systemName: "arrow.clockwise")
-                                        .font(.system(size: 24))
-                                        .foregroundColor(Color(.darkGray))
-                                }
-                            }
-                            
-                        }
-                    
-                    
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .padding()
                 if($viewModel.state.wrappedValue is HomeViewModelStateLoading) {
                     ProgressView("Loading...")
                 }
             }
-        }
-        .navigationViewStyle(StackNavigationViewStyle())
-        .onAppear{
-            Task {
-                await viewModel.getAllItems()
+            .onAppear{
+                Task {
+                    await viewModel.getAllItems()
+                }
             }
+            
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text("Dash")
+                    .font(.largeTitle)
+                    .fontWeight(.semibold)
+                    .padding()
+                
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    Task {
+                        await viewModel.getAllItems()
+                    }
+                }) {
+                    Image(systemName: "arrow.clockwise")
+                        .font(.system(size: 24))
+                        .foregroundColor(Color(.darkGray))
+                }
+            }
+            
         }
         
     }

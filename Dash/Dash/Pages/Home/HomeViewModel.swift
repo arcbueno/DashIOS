@@ -56,6 +56,7 @@ class HomeViewModel: ObservableObject {
                 await MainActor.run {
                     let toDo = list.filter { !$0.done }
                     let completed = list.filter { $0.done }
+                    inboxText = ""
                     state = HomeViewModelSuccess(toDo: toDo, completed: completed)
                 }
                 
@@ -148,26 +149,4 @@ class HomeViewModel: ObservableObject {
     }
 }
 
-class HomeViewModelState {
-    var toDo: [InboxItem] = []
-    var completed: [InboxItem] = []
-    init(toDo: [InboxItem] = [], completed: [InboxItem] = []) {
-        self.toDo = toDo
-        self.completed = completed
-    }
-}
 
-class HomeViewModelStateLoading: HomeViewModelState {
-    
-}
-class HomeViewModelStateError: HomeViewModelState {
-    let errorMessage: String
-    init(toDo: [InboxItem] = [], completed: [InboxItem] = [], errorMessage: String = "An error occurred") {
-        self.errorMessage = errorMessage
-        super.init(toDo: toDo, completed:completed)
-    }
-}
-
-class HomeViewModelSuccess: HomeViewModelState{
-    
-}
