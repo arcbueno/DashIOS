@@ -7,10 +7,10 @@
 
 import FirebaseAuth
 
-struct LoginRepository {
-    let  firebaseAuth: Auth;
+class LoginRepository {
+    let  firebaseAuth: AuthProtocol;
     
-    init(firebaseAuth: Auth) {
+    init(firebaseAuth: AuthProtocol) {
         self.firebaseAuth = firebaseAuth
     }
     
