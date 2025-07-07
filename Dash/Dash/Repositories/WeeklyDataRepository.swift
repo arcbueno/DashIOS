@@ -8,11 +8,11 @@
 import FirebaseAuth
 import FirebaseFirestore
 
-struct WeeklyDataRepository {
-    let firebaseAuth: Auth
-    let db: Firestore
+class WeeklyDataRepository {
+    let firebaseAuth: AuthProtocol
+    let db: FirestoreProtocol
     
-    init(firebaseAuth: Auth, firestore: Firestore) {
+    init(firebaseAuth: AuthProtocol, firestore: FirestoreProtocol) {
         self.firebaseAuth = firebaseAuth
         self.db = firestore
     }

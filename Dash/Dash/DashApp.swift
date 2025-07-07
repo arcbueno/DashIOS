@@ -56,19 +56,19 @@ final class Injection {
     private func buildContainer() -> Container {
         let container = Container()
         let firestoreDb = Firestore.firestore()
-        container.register(Firestore.self ,factory: { _ in firestoreDb })
-        container.register(Auth.self ,factory: { _ in Auth.auth() })
+        container.register(FirestoreProtocol.self, factory: { _ in firestoreDb })
+        container.register(AuthProtocol.self, factory: { _ in Auth.auth() })
         container.register(LoginRepository.self, factory: { resolver in
-            LoginRepository(firebaseAuth: resolver.resolve(Auth.self)!)
+            LoginRepository(firebaseAuth: resolver.resolve(AuthProtocol.self)!)
         })
         container.register(WeeklyDataRepository.self, factory: { resolver in
-            WeeklyDataRepository(firebaseAuth: resolver.resolve(Auth.self)!, firestore: resolver.resolve(Firestore.self)!)
+            WeeklyDataRepository(firebaseAuth: resolver.resolve(AuthProtocol.self)!, firestore: resolver.resolve(FirestoreProtocol.self)!)
         })
         container.register(InboxRepository.self, factory: { resolver in
-            InboxRepository(firebaseAuth: resolver.resolve(Auth.self)!, firestore: resolver.resolve(Firestore.self)!)
+            InboxRepository(firebaseAuth: resolver.resolve(AuthProtocol.self)!, firestore: resolver.resolve(FirestoreProtocol.self)!)
         })
         container.register(HabitRepository.self, factory: { resolver in
-            HabitRepository(firebaseAuth: resolver.resolve(Auth.self)!, firestore: resolver.resolve(Firestore.self)!)
+            HabitRepository(firebaseAuth: resolver.resolve(AuthProtocol.self)!, firestore: resolver.resolve(FirestoreProtocol.self)!)
         })
         return container
     }
