@@ -110,7 +110,6 @@ struct HabitTrackerPage: View {
                                                     Label("Delete habit", systemImage: "trash")
                                                 }
                                             }
-//                                            .gridCellUnsizedAxes([.vertical])
                                         }
                                         .listRowInsets(.init())
                                         
@@ -119,16 +118,16 @@ struct HabitTrackerPage: View {
                                 
                                 Spacer()
                                 HStack{
-                                    TextField("Add habit", text: $viewModel.inboxText, prompt: Text("Add habit").foregroundColor(.gray))
+                                    TextField("Add habit", text: $viewModel.habitText, prompt: Text("Add habit").foregroundColor(.gray))
                                         .font(.system(size: 24))
                                     
                                     Button(action: {
                                         Task {
-                                            if(viewModel.inboxText.isEmpty) {
+                                            if(viewModel.habitText.isEmpty) {
                                                 return
                                             }
-                                            await viewModel.addHabit(title: viewModel.inboxText)
-                                            viewModel.inboxText = ""
+                                            await viewModel.addHabit(title: viewModel.habitText)
+                                            viewModel.habitText = ""
                                         }
                                     }) {
                                         Image(systemName: "plus.circle.fill")

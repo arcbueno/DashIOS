@@ -9,7 +9,7 @@ import Foundation
 
 class HabitTrackerViewModel: ObservableObject{
     @Published var state: HabitTrackerState = HabitTrackerLoading()
-    var inboxText: String = ""
+    @Published var habitText: String = ""
     let habitTrackerRepository: HabitRepository
     
     init(habitTrackerRepository: HabitRepository) {
@@ -164,7 +164,6 @@ class HabitTrackerViewModel: ObservableObject{
             )
             let result: any Result<Bool> = try await habitTrackerRepository.addItem(item: newHabit)
             if(result is Success<Bool>){
-                inboxText = ""
                 await loadHabits()
             }
             if(result is Failure<Bool>){

@@ -10,7 +10,7 @@ import Foundation
 
 class WeeklyPrioritiesViewModel: ObservableObject {
     @Published var state: WeeklyPrioritiesState = WeeklyPrioritiesLoadingState()
-    var weeklyTitle: String = ""
+    @Published var weeklyTitle: String = ""
     let weeklyDataRepository: WeeklyDataRepository
     
     init(weeklyDataRepository: WeeklyDataRepository) {
