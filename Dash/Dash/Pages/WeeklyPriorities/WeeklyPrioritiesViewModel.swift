@@ -79,14 +79,19 @@ class WeeklyPrioritiesViewModel: ObservableObject {
     func addItem(title: String) async {
         let item = WeeklyItem(id: UUID().uuidString, title: title, done: false, createdAt: Date())
         do {
-            state = WeeklyPrioritiesLoadingState()
+            await MainActor.run {
+                state = WeeklyPrioritiesLoadingState()
+            }
             let result: any Result<Bool> = try await weeklyDataRepository.addItem(item: item)
             if(result is Success<Bool>){
+                weeklyTitle = ""
                 await getAllItems()
             }
             if(result is Failure<Bool>){
                 let error = (result as! Failure<Bool>).error
-                state = WeeklyPrioritiesStateError(errorMessage: "Error: \(error)")
+                await MainActor.run {
+                    state = WeeklyPrioritiesStateError(errorMessage: "Error: \(error)")
+                }
             }
         }
         catch{

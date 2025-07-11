@@ -164,6 +164,7 @@ class HabitTrackerViewModel: ObservableObject{
             )
             let result: any Result<Bool> = try await habitTrackerRepository.addItem(item: newHabit)
             if(result is Success<Bool>){
+                inboxText = ""
                 await loadHabits()
             }
             if(result is Failure<Bool>){

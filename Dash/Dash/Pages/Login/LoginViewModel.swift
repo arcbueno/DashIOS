@@ -27,7 +27,7 @@ class LoginViewModel: ObservableObject {
         }
         
         do {
-            let result = try await loginRepository.signIn(email: "parcb.augusto@gmail.com", password: "123456")
+            let result = try await loginRepository.signIn(email:email, password: password)
             print("User signed in successfully: \(result.user.email ?? "No email")")
             
             await MainActor.run {

@@ -26,7 +26,7 @@ struct HabitTrackerPage: View {
                             Text("Habit Tracker")
                                 .font(.system(size: 42))
                                 .fontWeight(.semibold)
-                            VStack{
+                            VStack(){
                                 HStack{
                                     Text(viewModel.getWeekText().0)
                                         .padding()
@@ -40,83 +40,84 @@ struct HabitTrackerPage: View {
                                         .padding()
                                         .frame(alignment: .center)
                                 }
-                                HStack{
-                                    Text("Habit")
-                                        .font(.system(size: 24))
-                                        .fontWeight(.semibold)
-                                        .foregroundColor(Color(.darkGray))
-                                        .frame(width: geometry.size.width / 4, alignment: .leading)
-                                    
-                                    Spacer()
-                                    HStack{
-                                        Text("Sun")
-                                            .font(.system(size: 16))
-                                            .foregroundColor(Color(.darkGray))
-                                        
-                                        Text("Mon")
-                                            .font(.system(size: 16))
-                                            .foregroundColor(Color(.darkGray))
-                                        Text("Tue")
-                                            .font(.system(size: 16))
-                                            .foregroundColor(Color(.darkGray))
-                                        Text("Wed")
-                                            .font(.system(size: 16))
-                                            .foregroundColor(Color(.darkGray))
-                                        Text("Thu")
-                                            .font(.system(size: 16))
-                                            .foregroundColor(Color(.darkGray))
-                                        Text("Fri")
-                                            .font(.system(size: 16))
-                                            .foregroundColor(Color(.darkGray))
-                                        Text("Sat")
-                                            .font(.system(size: 16))
-                                            .foregroundColor(Color(.darkGray))
-                                    }
-                                }
                                 if(viewModel.state.items.isEmpty) {
                                     Text("No habits found")
                                         .font(.system(size: 24))
                                         .foregroundColor(Color(.darkGray))
                                         .padding()
                                 }
-                                List{
-                                    ForEach(viewModel.state.items, id: \.self) { item in
-                                        HStack{
-                                            Text(item.title)
-                                                .font(.system(size: 20))
+                                else {
+                                    Grid(alignment: .leading,horizontalSpacing: 10, verticalSpacing: 10){
+                                        GridRow(alignment: .top){
+                                            Text("Habits")
+                                                .font(.system(size: 24))
+                                                .fontWeight(.semibold)
                                                 .foregroundColor(Color(.darkGray))
-                                                .frame(width: geometry.size.width / 4, alignment: .leading)
-                                                .contextMenu {
-                                                    Button{
-                                                        Task {
-                                                            await viewModel.deleteItem(id: item.id)
-                                                        }
-                                                    } label: {
-                                                        Label("Delete habit", systemImage: "trash")
-                                                    }
-                                                }
-                                            Spacer()
-                                            ForEach(item.records, id: \.self) { record in
-                                                Image(systemName: record.done ? "checkmark.circle.fill" : "circle")
-                                                    .font(.system(size: 24))
-                                                    .foregroundColor(record.done ? Color(.darkGray) : .gray)
-                                                    .onTapGesture {
-                                                        Task {
-                                                            await viewModel.toggleHabitDone(id: item.id, date: record.date)
-                                                        }
-                                                        
-                                                    }
-                                            }
-                                            
+                                                .frame(alignment:.leading)
+                                                .gridCellAnchor(.init(x: 0.20, y: 0.0))
+                                            Text("Sun")
+                                                .font(.system(size: 16))
+                                                .foregroundColor(Color(.darkGray))
+                                            Text("Mon")
+                                                .font(.system(size: 16))
+                                                .foregroundColor(Color(.darkGray))
+                                            Text("Tue")
+                                                .font(.system(size: 16))
+                                                .foregroundColor(Color(.darkGray))
+                                            Text("Wed")
+                                                .font(.system(size: 16))
+                                                .foregroundColor(Color(.darkGray))
+                                            Text("Thu")
+                                                .font(.system(size: 16))
+                                                .foregroundColor(Color(.darkGray))
+                                            Text("Fri")
+                                                .font(.system(size: 16))
+                                                .foregroundColor(Color(.darkGray))
+                                            Text("Sat")
+                                                .font(.system(size: 16))
+                                                .foregroundColor(Color(.darkGray))
                                         }
+                                        .gridCellUnsizedAxes([.vertical])
                                         
-                                        .listRowBackground(Color.clear)
-                                        .listRowSeparator(.hidden)
+                                        Divider()
+                                            .gridCellUnsizedAxes(.horizontal)
+                                        ForEach(viewModel.state.items, id: \.self) { item in
+                                            GridRow{
+                                                Text(item.title)
+                                                    .font(.system(size: 20))
+                                                    .foregroundColor(Color(.darkGray))
+                                                    .lineLimit(3)
+                                                    .gridCellAnchor(.init(x: 0.20, y: 0.1))
+                                                ForEach(item.records, id: \.self) { record in
+                                                    Image(systemName: record.done ? "checkmark.circle.fill" : "circle")
+                                                        .font(.system(size: 24))
+                                                        .foregroundColor(record.done ? Color(.darkGray) : .gray)
+                                                        .onTapGesture {
+                                                            Task {
+                                                                await viewModel.toggleHabitDone(id: item.id, date: record.date)
+                                                            }
+                                                            
+                                                        }
+                                                }
+                                                
+                                            }
+                                            .contextMenu {
+                                                Button{
+                                                    Task {
+                                                        await viewModel.deleteItem(id: item.id)
+                                                    }
+                                                } label: {
+                                                    Label("Delete habit", systemImage: "trash")
+                                                }
+                                            }
+//                                            .gridCellUnsizedAxes([.vertical])
+                                        }
                                         .listRowInsets(.init())
+                                        
                                     }
                                 }
-                                .listStyle(PlainListStyle())
-                                .scrollContentBackground(.hidden)
+                                
+                                Spacer()
                                 HStack{
                                     TextField("Add habit", text: $viewModel.inboxText, prompt: Text("Add habit").foregroundColor(.gray))
                                         .font(.system(size: 24))
